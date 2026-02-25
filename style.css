@@ -326,3 +326,11 @@ textarea#promptOutput {
     color: #e74c3c;
     font-weight: bold;
 }
+
+#randomFontPairBtn {
+    background-color: #9b59b6;
+    margin-bottom: 10px;
+}
+#randomFontPairBtn:hover {
+    background-color: #8e44ad;
+}
