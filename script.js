@@ -16,14 +16,12 @@ fetch('font-filter/fonts_cyrillic.json')
     console.log(`Загружено ${fontNames.length} кириллических шрифтов`);
 
     // Если вкладка "Дизайн и цвета" уже инициализирована (или будет позже), вызываем initDesignTab
-    // Но лучше вызвать после того, как DOM готов
     if (document.getElementById('base-font')) {
       initDesignTab();
     }
   })
   .catch(error => {
     console.error('Ошибка:', error);
-    // Показать сообщение пользователю, если элемент существует
     const previewArea = document.getElementById('font-preview');
     if (previewArea) {
       previewArea.innerHTML = '<p class="error">Не удалось загрузить данные о шрифтах. Попробуйте позже.</p>';
@@ -35,7 +33,7 @@ function initDesignTab() {
   const baseSelect = document.getElementById('base-font');
   const contrastSelect = document.getElementById('contrast-font');
   
-  if (!baseSelect || !contrastSelect) return; // если элементов нет, выходим
+  if (!baseSelect || !contrastSelect) return;
 
   // Заполняем выпадающие списки названиями шрифтов
   fontNames.forEach(fontName => {
@@ -53,7 +51,6 @@ function initDesignTab() {
   // Устанавливаем начальные значения (первые два разных шрифта)
   if (fontNames.length >= 2) {
     baseSelect.value = fontNames[0];
-    // Ищем второй шрифт, отличный от первого
     let secondFont = fontNames[1];
     if (secondFont === fontNames[0] && fontNames.length > 1) secondFont = fontNames[1];
     contrastSelect.value = secondFont;
@@ -62,7 +59,7 @@ function initDesignTab() {
     contrastSelect.value = fontNames[0];
   }
 
-  // Добавляем обработчики событий (убираем onchange из HTML)
+  // Добавляем обработчики событий
   baseSelect.addEventListener('change', updatePairing);
   contrastSelect.addEventListener('change', updatePairing);
   
@@ -81,15 +78,11 @@ function updatePairing() {
   const baseFont = baseSelect.value;
   const contrastFont = contrastSelect.value;
   
-  // Загружаем шрифты через Google Fonts, если они ещё не загружены
   if (baseFont) loadGoogleFont(baseFont);
   if (contrastFont) loadGoogleFont(contrastFont);
   
-  // Применяем стили: для примера используем baseFont для всего текста
-  // Можно сделать более сложную логику (например, baseFont для заголовка, contrastFont для текста)
   previewElement.style.fontFamily = `'${baseFont}', sans-serif`;
   
-  // Можно добавить отображение информации о векторах или степени контраста
   if (fontVectors[baseFont] && fontVectors[contrastFont]) {
     const similarity = calculateCosineSimilarity(
       fontVectors[baseFont], 
@@ -99,7 +92,7 @@ function updatePairing() {
   }
 }
 
-// Простая функция для вычисления косинусного сходства
+// Косинусное сходство
 function calculateCosineSimilarity(vecA, vecB) {
   let dotProduct = 0;
   let normA = 0;
@@ -113,7 +106,7 @@ function calculateCosineSimilarity(vecA, vecB) {
   return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
 }
 
-// Функция для загрузки шрифта через Google Fonts (если ещё не загружен)
+// Загрузка шрифта через Google Fonts
 function loadGoogleFont(fontName) {
   if (!fontName || fontName.trim() === '') return;
   const family = fontName.trim().replace(/ /g, '+');
@@ -126,7 +119,7 @@ function loadGoogleFont(fontName) {
   }
 }
 
-// --- Константы с фиксированными требованиями (без изменений) ---
+// --- Константы с фиксированными требованиями ---
 const MOBILE_REQUIREMENTS = `МОБИЛЬНАЯ ВЕРСИЯ
 Меню: бургер
 Порядок блоков: как на десктопе
@@ -145,7 +138,7 @@ const footer_requirements = `Footer/подвал:
 
 const STORAGE_KEY = 'lovablePromptBuilder';
 
-// --- Элементы формы (без старых шрифтов) ---
+// --- Элементы формы ---
 const form = document.getElementById('promptForm');
 const generateBtn = document.getElementById('generateBtn');
 const copyBtn = document.getElementById('copyBtn');
@@ -169,7 +162,7 @@ const styleInput = document.getElementById('style');
 const stylePreset = document.getElementById('stylePreset');
 const references = document.getElementById('references');
 
-// Цвета (три)
+// Цвета
 const colorPrimary = document.getElementById('colorPrimary');
 const colorPrimaryHex = document.getElementById('colorPrimaryHex');
 const colorPrimaryIgnore = document.getElementById('colorPrimaryIgnore');
@@ -183,14 +176,15 @@ const colorAccentIgnore = document.getElementById('colorAccentIgnore');
 // Типографика (новые селекты)
 const baseFontSelect = document.getElementById('base-font');
 const contrastFontSelect = document.getElementById('contrast-font');
+const randomFontPairBtn = document.getElementById('randomFontPairBtn');
 
-// --- Структура (Header и Footer фиксированы) ---
+// --- Структура ---
 const blocksCheckboxes = document.querySelectorAll('input[name="blocks"]');
 const blocksSortable = document.getElementById('blocks-sortable');
 const customBlockInput = document.getElementById('customBlockName');
 const addCustomBlockBtn = document.getElementById('addCustomBlock');
 let sortableInstance = null;
-let selectedBlocks = []; // только блоки, выбранные пользователем (без Header/Footer)
+let selectedBlocks = [];
 
 // --- Анимации ---
 const hoverButtons = document.querySelectorAll('input[name="hoverButtons"]');
@@ -286,7 +280,7 @@ function setupStyleSync() {
     });
 }
 
-// --- Обновление сортируемого списка блоков на основе чекбоксов ---
+// --- Обновление сортируемого списка блоков ---
 function updateBlocksList() {
     const checked = [];
     blocksCheckboxes.forEach(cb => {
@@ -311,7 +305,7 @@ function updateBlocksList() {
     renderSortableList();
 }
 
-// Отрисовка списка с фиксированными Header и Footer
+// Отрисовка списка
 function renderSortableList() {
     blocksSortable.innerHTML = '';
 
@@ -415,7 +409,6 @@ function saveFormState() {
         colorSecondaryIgnore: colorSecondaryIgnore.checked,
         colorAccent: colorAccent.value,
         colorAccentIgnore: colorAccentIgnore.checked,
-        // Сохраняем новые шрифты
         baseFont: baseFontSelect ? baseFontSelect.value : '',
         contrastFont: contrastFontSelect ? contrastFontSelect.value : '',
         selectedBlocks: selectedBlocks,
@@ -439,7 +432,6 @@ function loadFormState() {
     try {
         const formData = JSON.parse(saved);
 
-        // Тип сайта
         if (formData.siteType) {
             const radio = document.querySelector(`input[name="siteType"][value="${formData.siteType}"]`);
             if (radio) radio.checked = true;
@@ -479,7 +471,7 @@ function loadFormState() {
         }
         colorAccentIgnore.checked = formData.colorAccentIgnore || false;
 
-        // Загружаем новые шрифты, но только если селекты уже заполнены (инициализированы)
+        // Загружаем новые шрифты, если селекты уже инициализированы
         if (baseFontSelect && formData.baseFont && fontNames.includes(formData.baseFont)) {
             baseFontSelect.value = formData.baseFont;
         }
@@ -518,7 +510,6 @@ function loadFormState() {
         hasLogoCheckbox.checked = formData.hasLogo || false;
         extraWishes.value = formData.extraWishes || '';
 
-        // Обновить превью шрифтов после загрузки
         updatePairing();
 
     } catch (e) {
@@ -526,7 +517,7 @@ function loadFormState() {
     }
 }
 
-// --- Генерация промпта (обновлена для новых шрифтов) ---
+// --- Генерация промпта ---
 function generatePrompt() {
     if (!projectName.value.trim()) {
         alert('Пожалуйста, введите название проекта.');
@@ -537,40 +528,33 @@ function generatePrompt() {
     const siteType = document.querySelector('input[name="siteType"]:checked')?.value || 'Лендинг';
     let prompt = `# ПРОЕКТ: ${projectName.value.trim()}\n\n`;
 
-    // 1. КОНТЕКСТ И ЦЕЛИ
     prompt += `## 1. КОНТЕКСТ И ЦЕЛИ\n`;
     prompt += `Тип сайта: ${siteType}\n`;
     if (targetAudience.value.trim()) prompt += `Целевая аудитория: ${targetAudience.value.trim()}\n`;
-
     const goals = [];
     siteGoals.forEach(cb => { if (cb.checked) goals.push(cb.value); });
     if (goals.length > 0) prompt += `Главная цель сайта: ${goals.join(', ')}\n`;
-
     let tone = toneSelect.value;
     if (tone === 'other' && toneOther.value.trim()) tone = toneOther.value.trim();
     if (tone && tone !== 'other') prompt += `Тон коммуникации: ${tone}\n`;
     prompt += '\n';
 
-    // 2. ВИЗУАЛЬНАЯ ЭСТЕТИКА
     prompt += `## 2. ВИЗУАЛЬНАЯ ЭСТЕТИКА\n`;
     if (styleInput.value.trim()) prompt += `Стиль направления: ${styleInput.value.trim()}\n`;
     if (references.value.trim()) prompt += `Референсы: ${references.value.trim()}\n`;
     prompt += '\n';
 
-    // 3. ЦВЕТОВАЯ ПАЛИТРА
     prompt += `## 3. ЦВЕТОВАЯ ПАЛИТРА\n`;
     if (!colorPrimaryIgnore.checked) prompt += `Основной цвет: ${colorPrimary.value}\n`;
     if (!colorSecondaryIgnore.checked) prompt += `Второстепенный цвет: ${colorSecondary.value}\n`;
     if (!colorAccentIgnore.checked) prompt += `Акцентный цвет: ${colorAccent.value}\n`;
     prompt += '\n';
 
-    // 4. ТИПОГРАФИКА (новые поля)
     prompt += `## 4. ТИПОГРАФИКА\n`;
     if (baseFontSelect && baseFontSelect.value) prompt += `Шрифт заголовков: ${baseFontSelect.value}\n`;
     if (contrastFontSelect && contrastFontSelect.value) prompt += `Шрифт основного текста: ${contrastFontSelect.value}\n`;
     prompt += '\n';
 
-    // 5. СТРУКТУРА И СЕКЦИИ
     prompt += `## 5. СТРУКТУРА И СЕКЦИИ (ПО ПОРЯДКУ)\n`;
     prompt += `1. Header/Навигация\n`;
     if (selectedBlocks.length > 0) {
@@ -581,59 +565,33 @@ function generatePrompt() {
     prompt += `${selectedBlocks.length + 2}. Футер (подвал)\n`;
     prompt += '\n';
 
-    // 6. ИНТЕРАКТИВНОСТЬ И АНИМАЦИИ
     prompt += `## 6. ИНТЕРАКТИВНОСТЬ И АНИМАЦИИ\n`;
-
     const hoverButtonsSelected = [];
     hoverButtons.forEach(cb => { if (cb.checked) hoverButtonsSelected.push(cb.value); });
-    if (hoverButtonsSelected.length > 0) {
-        prompt += `Ховер-эффекты для кнопок: ${hoverButtonsSelected.join(', ')}\n`;
-    }
-
+    if (hoverButtonsSelected.length > 0) prompt += `Ховер-эффекты для кнопок: ${hoverButtonsSelected.join(', ')}\n`;
     const hoverCardsSelected = [];
     hoverCards.forEach(cb => { if (cb.checked) hoverCardsSelected.push(cb.value); });
-    if (hoverCardsSelected.length > 0) {
-        prompt += `Ховер-эффекты для карточек: ${hoverCardsSelected.join(', ')}\n`;
-    }
-
+    if (hoverCardsSelected.length > 0) prompt += `Ховер-эффекты для карточек: ${hoverCardsSelected.join(', ')}\n`;
     const hoverImagesSelected = [];
     hoverImages.forEach(cb => { if (cb.checked) hoverImagesSelected.push(cb.value); });
-    if (hoverImagesSelected.length > 0) {
-        prompt += `Ховер-эффекты для изображений: ${hoverImagesSelected.join(', ')}\n`;
-    }
-
+    if (hoverImagesSelected.length > 0) prompt += `Ховер-эффекты для изображений: ${hoverImagesSelected.join(', ')}\n`;
     const scrollType = document.querySelector('input[name="scrollType"]:checked')?.value || 'normal';
-    if (scrollType === 'snap') {
-        prompt += `Тип верстки: snap scrolling (прокрутка по секциям)\n`;
-    } else if (scrollType === 'slider') {
-        prompt += `Тип верстки: слайдерный скролл (секции наезжают сверху)\n`;
-    } else {
-        prompt += `Тип верстки: обычный\n`;
-    }
+    if (scrollType === 'snap') prompt += `Тип верстки: snap scrolling (прокрутка по секциям)\n`;
+    else if (scrollType === 'slider') prompt += `Тип верстки: слайдерный скролл (секции наезжают сверху)\n`;
+    else prompt += `Тип верстки: обычный\n`;
     prompt += '\n';
 
-    // 7. МОБИЛЬНАЯ ВЕРСИЯ
     prompt += `## 7. МОБИЛЬНАЯ ВЕРСИЯ\n`;
     prompt += MOBILE_REQUIREMENTS + '\n\n';
 
-    // 8. ТЕХНИЧЕСКИЕ ТРЕБОВАНИЯ
     prompt += `## 8. ТЕХНИЧЕСКИЕ ТРЕБОВАНИЯ\n`;
     prompt += TECH_REQUIREMENTS + '\n\n';
 
-    // 9. ДОПОЛНИТЕЛЬНЫЕ ПОЖЕЛАНИЯ
     prompt += `## 9. ДОПОЛНИТЕЛЬНЫЕ ПОЖЕЛАНИЯ\n`;
-    if (servicesTextarea.value.trim()) {
-        prompt += `Материалы заказчика (услуги/товары):\n${servicesTextarea.value.trim()}\n`;
-    }
-    if (companyDescTextarea.value.trim()) {
-        prompt += `Описание компании: ${companyDescTextarea.value.trim()}\n`;
-    }
-    if (hasLogoCheckbox.checked) {
-        prompt += `Есть логотип. Проанализируй его и используй дизайн-систему.\n`;
-    }
-    if (extraWishes.value.trim()) {
-        prompt += `Дополнительно: ${extraWishes.value.trim()}\n`;
-    }
+    if (servicesTextarea.value.trim()) prompt += `Материалы заказчика (услуги/товары):\n${servicesTextarea.value.trim()}\n`;
+    if (companyDescTextarea.value.trim()) prompt += `Описание компании: ${companyDescTextarea.value.trim()}\n`;
+    if (hasLogoCheckbox.checked) prompt += `Есть логотип. Проанализируй его и используй дизайн-систему.\n`;
+    if (extraWishes.value.trim()) prompt += `Дополнительно: ${extraWishes.value.trim()}\n`;
     prompt += `\nПожалуйста, сгенерируй код сайта, учитывая все указанные требования. При разработке дизайна опирайся на предоставленную дизайн-систему и, если есть, на стиль логотипа. Используй материалы заказчика для наполнения контентом.`;
 
     promptOutput.value = prompt;
@@ -673,7 +631,6 @@ function resetForm() {
         localStorage.removeItem(STORAGE_KEY);
         resultDiv.style.display = 'none';
         saveFormState();
-        // Сбросить шрифты на первые в списке
         if (fontNames.length > 0) {
             baseFontSelect.value = fontNames[0];
             contrastFontSelect.value = fontNames.length > 1 ? fontNames[1] : fontNames[0];
@@ -682,17 +639,35 @@ function resetForm() {
     }
 }
 
+// --- Обработчик для кнопки "Случайная пара" ---
+if (randomFontPairBtn) {
+    randomFontPairBtn.addEventListener('click', () => {
+        if (fontNames.length === 0) return;
+        // Случайный основной
+        const randomBase = fontNames[Math.floor(Math.random() * fontNames.length)];
+        let randomContrast = fontNames[Math.floor(Math.random() * fontNames.length)];
+        // Если есть хотя бы два разных шрифта, стараемся выбрать разные
+        if (fontNames.length > 1) {
+            let attempts = 0;
+            while (randomContrast === randomBase && attempts < 10) {
+                randomContrast = fontNames[Math.floor(Math.random() * fontNames.length)];
+                attempts++;
+            }
+        }
+        baseFontSelect.value = randomBase;
+        contrastFontSelect.value = randomContrast;
+        updatePairing();
+        saveFormState();
+    });
+}
+
 // --- Инициализация при загрузке DOM ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Сначала загружаем состояние из localStorage (если есть)
     loadFormState();
-    
-    // Инициализируем сортировку и синхронизацию
     initSortable();
     setupColorSync();
     setupStyleSync();
 
-    // Обработчики для блоков
     blocksCheckboxes.forEach(cb => {
         cb.addEventListener('change', () => {
             updateBlocksList();
@@ -708,7 +683,6 @@ document.addEventListener('DOMContentLoaded', () => {
         radio.addEventListener('change', saveFormState);
     });
 
-    // Сохраняем состояние при любом изменении формы
     form.addEventListener('input', saveFormState);
     form.addEventListener('change', saveFormState);
 
@@ -716,9 +690,6 @@ document.addEventListener('DOMContentLoaded', () => {
     copyBtn.addEventListener('click', copyToClipboard);
     addResetButton();
 
-    // Если данные шрифтов уже загружены (благодаря fetch выше), то initDesignTab уже вызван
-    // Но если ещё нет, то после загрузки они вызовутся.
-    // Дополнительно вызываем updatePairing после возможной загрузки из localStorage
     if (fontNames.length > 0) {
         updatePairing();
     }
