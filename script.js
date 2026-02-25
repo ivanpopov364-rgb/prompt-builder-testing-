@@ -1,3 +1,30 @@
+// Глобальная переменная для хранения данных о шрифтах
+let fontVectors = {};
+let fontNames = [];
+
+// Загружаем данные при загрузке страницы
+fetch('font-filter/fonts_cyrillic.json')
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Ошибка загрузки данных о шрифтах');
+    }
+    return response.json();
+  })
+  .then(data => {
+    fontVectors = data;
+    fontNames = Object.keys(fontVectors); // получаем массив названий
+    console.log(`Загружено ${fontNames.length} кириллических шрифтов`);
+    
+    // Здесь можно вызвать функцию для инициализации вкладки "Дизайн и цвета"
+    initDesignTab();
+  })
+  .catch(error => {
+    console.error('Ошибка:', error);
+    // Показать сообщение пользователю
+    document.getElementById('design-tab-content').innerHTML = 
+      '<p class="error">Не удалось загрузить данные о шрифтах. Попробуйте позже.</p>';
+  });
+
 // Константы с фиксированными требованиями
 const MOBILE_REQUIREMENTS = `МОБИЛЬНАЯ ВЕРСИЯ
 Меню: бургер
