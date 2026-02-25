@@ -1,0 +1,38 @@
+name: Filter Cyrillic Fonts
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  filter:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install pandas requests
+
+      - name: Download original data
+        run: |
+          mkdir -p font-filter
+          wget -O font-filter/metadata.tsv https://raw.githubusercontent.com/Jack000/fontjoy/master/metadata.tsv
+          wget -O font-filter/vectors-200.tsv https://raw.githubusercontent.com/Jack000/fontjoy/master/vectors-200.tsv
+
+      - name: Run filter script
+        run: python font-filter/filter_cyrillic.py
+
+      - name: Commit and push
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add font-filter/*.tsv font-filter/*.json
+          git diff --quiet && git diff --staged --quiet || git commit -m "Auto-update filtered fonts"
+          git push
