@@ -32,7 +32,7 @@ jobs:
         env:
           # Если у вас есть API-ключ Google Fonts, сохраните его в секретах
           # и раскомментируйте следующую строку. Иначе скрипт использует встроенный список.
-          # GOOGLE_FONTS_API_KEY: ${{ secrets.GOOGLE_FONTS_API_KEY }}
+           GOOGLE_FONTS_API_KEY: ${{ secrets.GOOGLE_FONTS_API_KEY }}
         run: python font-filter/filter_cyrillic.py
 
       - name: Commit and push changes
