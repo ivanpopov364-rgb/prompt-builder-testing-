@@ -1,3 +1,4 @@
+/* Все существующие стили остаются без изменений */
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f7f6;
@@ -253,16 +254,7 @@ textarea#promptOutput {
     background-color: #c0392b;
 }
 
-#generateFontPair {
-    background-color: #9b59b6;
-}
-
-#generateFontPair:hover {
-    background-color: #8e44ad;
-}
-.font-preview-container {
-    transition: all 0.3s ease;
-}
+/* Стили для фиксированных элементов в списке блоков */
 .fixed-item {
     background-color: #e0e0e0 !important;
     cursor: default !important;
@@ -272,7 +264,8 @@ textarea#promptOutput {
 .sortable-list li.fixed-item:hover {
     background-color: #e0e0e0 !important;
 }
-/* Стили для кнопок удаления в списке блоков */
+
+/* Кнопки удаления в списке блоков */
 .sortable-list li span {
     font-size: 20px;
     line-height: 1;
@@ -283,6 +276,53 @@ textarea#promptOutput {
     color: darkred;
 }
 
-.preview-header, .preview-body {
+/* === НОВЫЕ СТИЛИ для секции подбора шрифтов === */
+#font-pairing-section {
+    margin-top: 20px;
+}
+
+.font-selector {
+    margin-bottom: 15px;
+}
+
+.font-selector label {
+    font-weight: 500;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.font-selector select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: white;
+    font-size: 1rem;
+}
+
+#font-preview {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+#font-preview h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    color: #2c3e50;
+}
+
+#preview-text {
+    font-size: 18px;
+    line-height: 1.6;
+    margin: 0;
     transition: font-family 0.2s ease;
+}
+
+.error {
+    color: #e74c3c;
+    font-weight: bold;
 }
