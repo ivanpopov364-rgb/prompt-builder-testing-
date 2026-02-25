@@ -1,64 +1,3 @@
-// Инициализация вкладки дизайна (вызывается после загрузки данных)
-function initDesignTab() {
-  const baseSelect = document.getElementById('base-font');
-  const contrastSelect = document.getElementById('contrast-font');
-  
-  // Заполняем выпадающие списки названиями шрифтов
-  fontNames.forEach(fontName => {
-    const option1 = document.createElement('option');
-    option1.value = fontName;
-    option1.textContent = fontName;
-    baseSelect.appendChild(option1);
-    
-    const option2 = document.createElement('option');
-    option2.value = fontName;
-    option2.textContent = fontName;
-    contrastSelect.appendChild(option2);
-  });
-  
-  // Устанавливаем начальные значения
-  baseSelect.value = 'Roboto';
-  contrastSelect.value = 'Open Sans';
-  
-  // Применяем шрифты к превью
-  updatePairing();
-}
-
-// Обновление превью при выборе шрифтов
-function updatePairing() {
-  const baseFont = document.getElementById('base-font').value;
-  const contrastFont = document.getElementById('contrast-font').value;
-  const previewElement = document.getElementById('preview-text');
-  
-  // Применяем стили через CSS (шрифты должны быть подключены из Google Fonts)
-  previewElement.style.fontFamily = `'${baseFont}', sans-serif`;
-  
-  // Можно добавить отображение информации о векторах или степени контраста
-  if (fontVectors[baseFont] && fontVectors[contrastFont]) {
-    const similarity = calculateCosineSimilarity(
-      fontVectors[baseFont], 
-      fontVectors[contrastFont]
-    );
-    console.log(`Сходство: ${similarity.toFixed(2)}`);
-  }
-}
-
-// Простая функция для вычисления косинусного сходства (пример)
-function calculateCosineSimilarity(vecA, vecB) {
-  let dotProduct = 0;
-  let normA = 0;
-  let normB = 0;
-  for (let i = 0; i < vecA.length; i++) {
-    dotProduct += vecA[i] * vecB[i];
-    normA += vecA[i] * vecA[i];
-    normB += vecB[i] * vecB[i];
-  }
-  if (normA === 0 || normB === 0) return 0;
-  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
-}
-
-
-
 // Глобальная переменная для хранения данных о шрифтах
 let fontVectors = {};
 let fontNames = [];
@@ -75,18 +14,119 @@ fetch('font-filter/fonts_cyrillic.json')
     fontVectors = data;
     fontNames = Object.keys(fontVectors); // получаем массив названий
     console.log(`Загружено ${fontNames.length} кириллических шрифтов`);
-    
-    // Здесь можно вызвать функцию для инициализации вкладки "Дизайн и цвета"
-    initDesignTab();
+
+    // Если вкладка "Дизайн и цвета" уже инициализирована (или будет позже), вызываем initDesignTab
+    // Но лучше вызвать после того, как DOM готов
+    if (document.getElementById('base-font')) {
+      initDesignTab();
+    }
   })
   .catch(error => {
     console.error('Ошибка:', error);
-    // Показать сообщение пользователю
-    document.getElementById('design-tab-content').innerHTML = 
-      '<p class="error">Не удалось загрузить данные о шрифтах. Попробуйте позже.</p>';
+    // Показать сообщение пользователю, если элемент существует
+    const previewArea = document.getElementById('font-preview');
+    if (previewArea) {
+      previewArea.innerHTML = '<p class="error">Не удалось загрузить данные о шрифтах. Попробуйте позже.</p>';
+    }
   });
 
-// Константы с фиксированными требованиями
+// Инициализация вкладки дизайна (заполнение селектов)
+function initDesignTab() {
+  const baseSelect = document.getElementById('base-font');
+  const contrastSelect = document.getElementById('contrast-font');
+  
+  if (!baseSelect || !contrastSelect) return; // если элементов нет, выходим
+
+  // Заполняем выпадающие списки названиями шрифтов
+  fontNames.forEach(fontName => {
+    const option1 = document.createElement('option');
+    option1.value = fontName;
+    option1.textContent = fontName;
+    baseSelect.appendChild(option1);
+    
+    const option2 = document.createElement('option');
+    option2.value = fontName;
+    option2.textContent = fontName;
+    contrastSelect.appendChild(option2);
+  });
+  
+  // Устанавливаем начальные значения (первые два разных шрифта)
+  if (fontNames.length >= 2) {
+    baseSelect.value = fontNames[0];
+    // Ищем второй шрифт, отличный от первого
+    let secondFont = fontNames[1];
+    if (secondFont === fontNames[0] && fontNames.length > 1) secondFont = fontNames[1];
+    contrastSelect.value = secondFont;
+  } else if (fontNames.length === 1) {
+    baseSelect.value = fontNames[0];
+    contrastSelect.value = fontNames[0];
+  }
+
+  // Добавляем обработчики событий (убираем onchange из HTML)
+  baseSelect.addEventListener('change', updatePairing);
+  contrastSelect.addEventListener('change', updatePairing);
+  
+  // Применяем шрифты к превью
+  updatePairing();
+}
+
+// Обновление превью при выборе шрифтов
+function updatePairing() {
+  const baseSelect = document.getElementById('base-font');
+  const contrastSelect = document.getElementById('contrast-font');
+  const previewElement = document.getElementById('preview-text');
+  
+  if (!baseSelect || !contrastSelect || !previewElement) return;
+
+  const baseFont = baseSelect.value;
+  const contrastFont = contrastSelect.value;
+  
+  // Загружаем шрифты через Google Fonts, если они ещё не загружены
+  if (baseFont) loadGoogleFont(baseFont);
+  if (contrastFont) loadGoogleFont(contrastFont);
+  
+  // Применяем стили: для примера используем baseFont для всего текста
+  // Можно сделать более сложную логику (например, baseFont для заголовка, contrastFont для текста)
+  previewElement.style.fontFamily = `'${baseFont}', sans-serif`;
+  
+  // Можно добавить отображение информации о векторах или степени контраста
+  if (fontVectors[baseFont] && fontVectors[contrastFont]) {
+    const similarity = calculateCosineSimilarity(
+      fontVectors[baseFont], 
+      fontVectors[contrastFont]
+    );
+    console.log(`Сходство между ${baseFont} и ${contrastFont}: ${similarity.toFixed(2)}`);
+  }
+}
+
+// Простая функция для вычисления косинусного сходства
+function calculateCosineSimilarity(vecA, vecB) {
+  let dotProduct = 0;
+  let normA = 0;
+  let normB = 0;
+  for (let i = 0; i < vecA.length; i++) {
+    dotProduct += vecA[i] * vecB[i];
+    normA += vecA[i] * vecA[i];
+    normB += vecB[i] * vecB[i];
+  }
+  if (normA === 0 || normB === 0) return 0;
+  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+}
+
+// Функция для загрузки шрифта через Google Fonts (если ещё не загружен)
+function loadGoogleFont(fontName) {
+  if (!fontName || fontName.trim() === '') return;
+  const family = fontName.trim().replace(/ /g, '+');
+  const existingLink = document.querySelector(`link[href*="${family}"]`);
+  if (!existingLink) {
+    const link = document.createElement('link');
+    link.href = `https://fonts.googleapis.com/css2?family=${family}:wght@400;700&subset=cyrillic&display=swap`;
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+  }
+}
+
+// --- Константы с фиксированными требованиями (без изменений) ---
 const MOBILE_REQUIREMENTS = `МОБИЛЬНАЯ ВЕРСИЯ
 Меню: бургер
 Порядок блоков: как на десктопе
@@ -105,68 +145,7 @@ const footer_requirements = `Footer/подвал:
 
 const STORAGE_KEY = 'lovablePromptBuilder';
 
-// --- База популярных шрифтов Google Fonts с категориями ---
-const fontDatabase = [
-    // С засечками (serif)
-    { name: 'Merriweather', category: 'serif', style: 'text' },
-    { name: 'Playfair Display', category: 'serif', style: 'display' },
-    { name: 'PT Serif', category: 'serif', style: 'text' },
-    { name: 'Lora', category: 'serif', style: 'text' },
-    { name: 'Cormorant Garamond', category: 'serif', style: 'display' },
-    { name: 'Roboto Slab', category: 'serif', style: 'text' },
-    // Без засечек (sans-serif)
-    { name: 'Roboto', category: 'sans-serif', style: 'text' },
-    { name: 'Open Sans', category: 'sans-serif', style: 'text' },
-    { name: 'Montserrat', category: 'sans-serif', style: 'display' },
-    { name: 'Lato', category: 'sans-serif', style: 'text' },
-    { name: 'Poppins', category: 'sans-serif', style: 'display' },
-    { name: 'Oswald', category: 'sans-serif', style: 'display' },
-    { name: 'Raleway', category: 'sans-serif', style: 'display' },
-    { name: 'Inter', category: 'sans-serif', style: 'text' },
-    { name: 'Source Sans Pro', category: 'sans-serif', style: 'text' },
-    // Акцидентные (display) и рукописные
-    { name: 'Lobster', category: 'display', style: 'display' },
-    { name: 'Abril Fatface', category: 'display', style: 'display' },
-    { name: 'Bebas Neue', category: 'display', style: 'display' },
-    { name: 'Pacifico', category: 'handwriting', style: 'display' },
-    { name: 'Dancing Script', category: 'handwriting', style: 'display' },
-    { name: 'Comfortaa', category: 'display', style: 'display' }
-];
-
-// --- Функция генерации случайной пары шрифтов ---
-function generateRandomFontPair() {
-    let headerCandidates = fontDatabase.filter(f => f.style === 'display' || f.category === 'display');
-    if (headerCandidates.length === 0) headerCandidates = fontDatabase;
-
-    let bodyCandidates = fontDatabase.filter(f => f.style === 'text');
-    if (bodyCandidates.length === 0) bodyCandidates = fontDatabase;
-
-    let header = headerCandidates[Math.floor(Math.random() * headerCandidates.length)];
-    let body = bodyCandidates[Math.floor(Math.random() * bodyCandidates.length)];
-
-    let attempts = 0;
-    while (header.name === body.name && attempts < 10) {
-        body = bodyCandidates[Math.floor(Math.random() * bodyCandidates.length)];
-        attempts++;
-    }
-
-    return { header: header.name, body: body.name };
-}
-
-// --- Функция для загрузки шрифта через Google Fonts ---
-function loadGoogleFont(fontName) {
-    if (!fontName || fontName.trim() === '') return;
-    const family = fontName.trim().replace(/ /g, '+');
-    const existingLink = document.querySelector(`link[href*="${family}"]`);
-    if (!existingLink) {
-        const link = document.createElement('link');
-        link.href = `https://fonts.googleapis.com/css2?family=${family}:wght@400;700&display=swap`;
-        link.rel = 'stylesheet';
-        document.head.appendChild(link);
-    }
-}
-
-// --- Элементы формы ---
+// --- Элементы формы (без старых шрифтов) ---
 const form = document.getElementById('promptForm');
 const generateBtn = document.getElementById('generateBtn');
 const copyBtn = document.getElementById('copyBtn');
@@ -201,14 +180,9 @@ const colorAccent = document.getElementById('colorAccent');
 const colorAccentHex = document.getElementById('colorAccentHex');
 const colorAccentIgnore = document.getElementById('colorAccentIgnore');
 
-// Типографика
-const headerFont = document.getElementById('headerFont');
-const bodyFont = document.getElementById('bodyFont');
-const generateFontBtn = document.getElementById('generateFontPair');
-
-// Элементы предпросмотра шрифтов
-const previewHeader = document.querySelector('.preview-header');
-const previewBody = document.querySelector('.preview-body');
+// Типографика (новые селекты)
+const baseFontSelect = document.getElementById('base-font');
+const contrastFontSelect = document.getElementById('contrast-font');
 
 // --- Структура (Header и Footer фиксированы) ---
 const blocksCheckboxes = document.querySelectorAll('input[name="blocks"]');
@@ -312,39 +286,6 @@ function setupStyleSync() {
     });
 }
 
-// --- Функция обновления предпросмотра шрифтов ---
-function updateFontPreview() {
-    const header = headerFont.value.trim();
-    const body = bodyFont.value.trim();
-
-    if (header) {
-        loadGoogleFont(header);
-        previewHeader.style.fontFamily = `'${header}', 'Times New Roman', serif`;
-        previewHeader.textContent = `Заголовок (${header}): Пример заголовка`;
-    } else {
-        previewHeader.style.fontFamily = '';
-        previewHeader.textContent = 'Заголовок: Пример заголовка';
-    }
-
-    if (body) {
-        loadGoogleFont(body);
-        previewBody.style.fontFamily = `'${body}', Arial, sans-serif`;
-        previewBody.textContent = `Основной текст (${body}): Здесь будет пример текста, набранного основным шрифтом. Посмотрите, как он читается.`;
-    } else {
-        previewBody.style.fontFamily = '';
-        previewBody.textContent = 'Основной текст: Здесь будет пример текста, набранного основным шрифтом. Посмотрите, как он читается.';
-    }
-}
-
-// --- Генератор шрифтов ---
-generateFontBtn.addEventListener('click', () => {
-    const pair = generateRandomFontPair();
-    headerFont.value = pair.header;
-    bodyFont.value = pair.body;
-    updateFontPreview();
-    saveFormState();
-});
-
 // --- Обновление сортируемого списка блоков на основе чекбоксов ---
 function updateBlocksList() {
     const checked = [];
@@ -352,39 +293,28 @@ function updateBlocksList() {
         if (cb.checked) checked.push(cb.value);
     });
 
-    // Оставляем только те, которые были в selectedBlocks и остались выбранными (стандартные)
-    // Кастомные блоки не удаляем автоматически, они остаются
-    // Но если кастомный блок совпадает с названием стандартного? Не должно.
-    // Чтобы удалить кастомный блок, нужно нажать крестик.
-    // При изменении чекбоксов мы не трогаем кастомные блоки, они остаются.
-    // Однако если пользователь добавил кастомный блок, а потом решил убрать, он может удалить через крестик.
-    // Поэтому здесь мы только обновляем selectedBlocks, добавляя новые стандартные блоки.
-    const newSelected = [...selectedBlocks]; // копируем текущие (включая кастомные)
+    const newSelected = [...selectedBlocks];
     
-    // Добавляем новые стандартные блоки, которых ещё нет
     checked.forEach(block => {
         if (!newSelected.includes(block)) newSelected.push(block);
     });
 
-    // Удаляем стандартные блоки, которые были сняты
-    // То есть оставляем только те, которые либо кастомные (не в списке стандартных), либо отмечены
     const standardBlocks = Array.from(blocksCheckboxes).map(cb => cb.value);
     const filtered = newSelected.filter(block => {
         if (standardBlocks.includes(block)) {
             return checked.includes(block);
         }
-        return true; // кастомные оставляем
+        return true;
     });
 
     selectedBlocks = filtered;
     renderSortableList();
 }
 
-// Отрисовка списка с фиксированными Header и Footer и кнопками удаления
+// Отрисовка списка с фиксированными Header и Footer
 function renderSortableList() {
     blocksSortable.innerHTML = '';
 
-    // Фиксированный Header
     const headerLi = document.createElement('li');
     headerLi.textContent = 'Header/Навигация';
     headerLi.classList.add('fixed-item');
@@ -392,24 +322,19 @@ function renderSortableList() {
     headerLi.style.cursor = 'default';
     blocksSortable.appendChild(headerLi);
 
-    // Перемещаемые блоки (выбранные пользователем) с кнопкой удаления
-    selectedBlocks.forEach((block, index) => {
+    selectedBlocks.forEach((block) => {
         const li = document.createElement('li');
         li.textContent = block;
 
-        // Добавляем кнопку удаления, если блок не фиксированный
         const removeSpan = document.createElement('span');
         removeSpan.textContent = ' ×';
         removeSpan.style.cssText = 'color: red; cursor: pointer; margin-left: 10px; font-weight: bold; float: right;';
         removeSpan.title = 'Удалить блок';
         removeSpan.addEventListener('click', (e) => {
             e.stopPropagation();
-            // Удаляем блок из selectedBlocks
-            const blockToRemove = block;
-            selectedBlocks = selectedBlocks.filter(b => b !== blockToRemove);
-            // Если это стандартный блок, снимаем соответствующий чекбокс
+            selectedBlocks = selectedBlocks.filter(b => b !== block);
             blocksCheckboxes.forEach(cb => {
-                if (cb.value === blockToRemove) {
+                if (cb.value === block) {
                     cb.checked = false;
                 }
             });
@@ -421,7 +346,6 @@ function renderSortableList() {
         blocksSortable.appendChild(li);
     });
 
-    // Фиксированный Footer
     const footerLi = document.createElement('li');
     footerLi.textContent = 'Футер (подвал)';
     footerLi.classList.add('fixed-item');
@@ -430,7 +354,7 @@ function renderSortableList() {
     blocksSortable.appendChild(footerLi);
 }
 
-// Инициализация Sortable с фильтром для фиксированных элементов
+// Инициализация Sortable
 function initSortable() {
     if (sortableInstance) sortableInstance.destroy();
     sortableInstance = new Sortable(blocksSortable, {
@@ -439,11 +363,10 @@ function initSortable() {
         filter: '.fixed-item',
         preventOnFilter: false,
         onEnd: function(evt) {
-            // Обновить selectedBlocks в соответствии с новым порядком (исключая fixed элементы)
             const items = Array.from(blocksSortable.children);
             const newOrder = items
                 .filter(li => !li.classList.contains('fixed-item'))
-                .map(li => li.textContent.replace(' ×', '')); // убираем маркер удаления
+                .map(li => li.textContent.replace(' ×', ''));
             selectedBlocks = newOrder;
             saveFormState();
         }
@@ -492,8 +415,9 @@ function saveFormState() {
         colorSecondaryIgnore: colorSecondaryIgnore.checked,
         colorAccent: colorAccent.value,
         colorAccentIgnore: colorAccentIgnore.checked,
-        headerFont: headerFont.value,
-        bodyFont: bodyFont.value,
+        // Сохраняем новые шрифты
+        baseFont: baseFontSelect ? baseFontSelect.value : '',
+        contrastFont: contrastFontSelect ? contrastFontSelect.value : '',
         selectedBlocks: selectedBlocks,
         hoverButtons: hoverButtonsSelected,
         hoverCards: hoverCardsSelected,
@@ -555,12 +479,16 @@ function loadFormState() {
         }
         colorAccentIgnore.checked = formData.colorAccentIgnore || false;
 
-        headerFont.value = formData.headerFont || '';
-        bodyFont.value = formData.bodyFont || '';
+        // Загружаем новые шрифты, но только если селекты уже заполнены (инициализированы)
+        if (baseFontSelect && formData.baseFont && fontNames.includes(formData.baseFont)) {
+            baseFontSelect.value = formData.baseFont;
+        }
+        if (contrastFontSelect && formData.contrastFont && fontNames.includes(formData.contrastFont)) {
+            contrastFontSelect.value = formData.contrastFont;
+        }
 
         if (Array.isArray(formData.selectedBlocks)) {
             selectedBlocks = formData.selectedBlocks;
-            // Отметить чекбоксы для стандартных блоков
             blocksCheckboxes.forEach(cb => {
                 cb.checked = selectedBlocks.includes(cb.value);
             });
@@ -580,7 +508,6 @@ function loadFormState() {
             cb.checked = formData.hoverImages?.includes(cb.value) || false;
         });
 
-        // Тип скролла
         if (formData.scrollType) {
             const radio = document.querySelector(`input[name="scrollType"][value="${formData.scrollType}"]`);
             if (radio) radio.checked = true;
@@ -591,14 +518,15 @@ function loadFormState() {
         hasLogoCheckbox.checked = formData.hasLogo || false;
         extraWishes.value = formData.extraWishes || '';
 
-        updateFontPreview();
+        // Обновить превью шрифтов после загрузки
+        updatePairing();
 
     } catch (e) {
         console.error('Ошибка загрузки из localStorage', e);
     }
 }
 
-// --- Генерация промпта ---
+// --- Генерация промпта (обновлена для новых шрифтов) ---
 function generatePrompt() {
     if (!projectName.value.trim()) {
         alert('Пожалуйста, введите название проекта.');
@@ -636,13 +564,13 @@ function generatePrompt() {
     if (!colorAccentIgnore.checked) prompt += `Акцентный цвет: ${colorAccent.value}\n`;
     prompt += '\n';
 
-    // 4. ТИПОГРАФИКА
+    // 4. ТИПОГРАФИКА (новые поля)
     prompt += `## 4. ТИПОГРАФИКА\n`;
-    if (headerFont.value.trim()) prompt += `Шрифт заголовков: ${headerFont.value.trim()}\n`;
-    if (bodyFont.value.trim()) prompt += `Шрифт основного текста: ${bodyFont.value.trim()}\n`;
+    if (baseFontSelect && baseFontSelect.value) prompt += `Шрифт заголовков: ${baseFontSelect.value}\n`;
+    if (contrastFontSelect && contrastFontSelect.value) prompt += `Шрифт основного текста: ${contrastFontSelect.value}\n`;
     prompt += '\n';
 
-    // 5. СТРУКТУРА И СЕКЦИИ (ПО ПОРЯДКУ)
+    // 5. СТРУКТУРА И СЕКЦИИ
     prompt += `## 5. СТРУКТУРА И СЕКЦИИ (ПО ПОРЯДКУ)\n`;
     prompt += `1. Header/Навигация\n`;
     if (selectedBlocks.length > 0) {
@@ -745,20 +673,26 @@ function resetForm() {
         localStorage.removeItem(STORAGE_KEY);
         resultDiv.style.display = 'none';
         saveFormState();
-        updateFontPreview();
+        // Сбросить шрифты на первые в списке
+        if (fontNames.length > 0) {
+            baseFontSelect.value = fontNames[0];
+            contrastFontSelect.value = fontNames.length > 1 ? fontNames[1] : fontNames[0];
+            updatePairing();
+        }
     }
 }
 
-// --- Инициализация ---
+// --- Инициализация при загрузке DOM ---
 document.addEventListener('DOMContentLoaded', () => {
+    // Сначала загружаем состояние из localStorage (если есть)
     loadFormState();
+    
+    // Инициализируем сортировку и синхронизацию
     initSortable();
     setupColorSync();
     setupStyleSync();
 
-    headerFont.addEventListener('input', updateFontPreview);
-    bodyFont.addEventListener('input', updateFontPreview);
-
+    // Обработчики для блоков
     blocksCheckboxes.forEach(cb => {
         cb.addEventListener('change', () => {
             updateBlocksList();
@@ -774,6 +708,7 @@ document.addEventListener('DOMContentLoaded', () => {
         radio.addEventListener('change', saveFormState);
     });
 
+    // Сохраняем состояние при любом изменении формы
     form.addEventListener('input', saveFormState);
     form.addEventListener('change', saveFormState);
 
@@ -781,5 +716,10 @@ document.addEventListener('DOMContentLoaded', () => {
     copyBtn.addEventListener('click', copyToClipboard);
     addResetButton();
 
-    updateFontPreview();
+    // Если данные шрифтов уже загружены (благодаря fetch выше), то initDesignTab уже вызван
+    // Но если ещё нет, то после загрузки они вызовутся.
+    // Дополнительно вызываем updatePairing после возможной загрузки из localStorage
+    if (fontNames.length > 0) {
+        updatePairing();
+    }
 });
