@@ -1,3 +1,64 @@
+// Инициализация вкладки дизайна (вызывается после загрузки данных)
+function initDesignTab() {
+  const baseSelect = document.getElementById('base-font');
+  const contrastSelect = document.getElementById('contrast-font');
+  
+  // Заполняем выпадающие списки названиями шрифтов
+  fontNames.forEach(fontName => {
+    const option1 = document.createElement('option');
+    option1.value = fontName;
+    option1.textContent = fontName;
+    baseSelect.appendChild(option1);
+    
+    const option2 = document.createElement('option');
+    option2.value = fontName;
+    option2.textContent = fontName;
+    contrastSelect.appendChild(option2);
+  });
+  
+  // Устанавливаем начальные значения
+  baseSelect.value = 'Roboto';
+  contrastSelect.value = 'Open Sans';
+  
+  // Применяем шрифты к превью
+  updatePairing();
+}
+
+// Обновление превью при выборе шрифтов
+function updatePairing() {
+  const baseFont = document.getElementById('base-font').value;
+  const contrastFont = document.getElementById('contrast-font').value;
+  const previewElement = document.getElementById('preview-text');
+  
+  // Применяем стили через CSS (шрифты должны быть подключены из Google Fonts)
+  previewElement.style.fontFamily = `'${baseFont}', sans-serif`;
+  
+  // Можно добавить отображение информации о векторах или степени контраста
+  if (fontVectors[baseFont] && fontVectors[contrastFont]) {
+    const similarity = calculateCosineSimilarity(
+      fontVectors[baseFont], 
+      fontVectors[contrastFont]
+    );
+    console.log(`Сходство: ${similarity.toFixed(2)}`);
+  }
+}
+
+// Простая функция для вычисления косинусного сходства (пример)
+function calculateCosineSimilarity(vecA, vecB) {
+  let dotProduct = 0;
+  let normA = 0;
+  let normB = 0;
+  for (let i = 0; i < vecA.length; i++) {
+    dotProduct += vecA[i] * vecB[i];
+    normA += vecA[i] * vecA[i];
+    normB += vecB[i] * vecB[i];
+  }
+  if (normA === 0 || normB === 0) return 0;
+  return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+}
+
+
+
 // Глобальная переменная для хранения данных о шрифтах
 let fontVectors = {};
 let fontNames = [];
