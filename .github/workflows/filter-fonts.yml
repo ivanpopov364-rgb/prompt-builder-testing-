@@ -2,8 +2,12 @@ name: Filter Cyrillic Fonts
 
 on:
   push:
-    branches: [ "main" ]          # ⚠️ Если ваша основная ветка называется master, замените "main" на "master"
-  workflow_dispatch:               # позволяет запускать вручную
+    branches: [ "main" ]
+  workflow_dispatch:
+
+# Добавьте этот блок для прав на запись
+permissions:
+  contents: write
 
 jobs:
   filter:
@@ -21,7 +25,6 @@ jobs:
       - name: Install dependencies
         run: pip install pandas requests
 
-      # Шаг скачивания удалён — используем локальные файлы из fontjoy-data/
       - name: Run filter script
         run: python font-filter/filter_cyrillic.py
 
