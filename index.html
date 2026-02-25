@@ -26,7 +26,6 @@
         <form id="promptForm">
             <!-- Вкладка 1: Контекст и цели (без изменений) -->
             <div id="tab1" class="tab-content active">
-                <!-- ... содержимое без изменений ... -->
                 <fieldset>
                     <legend>Контекст и цели</legend>
                     <!-- Тип сайта (радио) -->
@@ -149,6 +148,9 @@
                 <fieldset>
                     <legend>🔤 Подбор пары шрифтов (из кириллической коллекции)</legend>
                     <div id="font-pairing-section">
+                        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
+                            <button type="button" id="randomFontPairBtn" style="background-color: #9b59b6;">🎲 Случайная пара</button>
+                        </div>
                         <div class="font-selector">
                             <label for="base-font">Основной шрифт (заголовки):</label>
                             <select id="base-font"></select>
