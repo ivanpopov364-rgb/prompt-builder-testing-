@@ -1,0 +1,288 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7f6;
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+    color: #333;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #2c3e50;
+}
+
+/* Вкладки */
+.tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.tab-button {
+    background: none;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    color: #666;
+    border-radius: 6px 6px 0 0;
+    transition: all 0.3s;
+}
+
+.tab-button:hover {
+    background-color: #e9e9e9;
+    color: #333;
+}
+
+.tab-button.active {
+    background-color: #3498db;
+    color: white;
+}
+
+.tab-content {
+    display: none;
+    padding: 20px 0;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Формы */
+fieldset {
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+legend {
+    font-weight: bold;
+    padding: 0 10px;
+    color: #2c3e50;
+}
+
+label {
+    display: block;
+    margin: 8px 0;
+    cursor: pointer;
+}
+
+input[type="text"],
+input[type="url"],
+input[type="color"],
+textarea,
+select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    margin-top: 5px;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 10px 0;
+}
+
+.checkbox-group label {
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+}
+
+/* Сортируемый список */
+.sortable-list {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #f9f9f9;
+    min-height: 50px;
+}
+
+.sortable-list li {
+    padding: 12px 15px;
+    margin: 5px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: grab;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.sortable-list li:active {
+    cursor: grabbing;
+}
+
+.sortable-list li.sortable-ghost {
+    opacity: 0.4;
+    background: #c8ebfb;
+}
+
+/* Цветовые поля */
+.color-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 15px;
+}
+
+.color-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1 1 180px;
+    border: 1px solid #eee;
+    padding: 10px;
+    border-radius: 8px;
+    background: #fafafa;
+}
+
+.color-item input[type="color"] {
+    width: 60px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.color-item input[type="text"] {
+    width: 100px;
+    padding: 6px;
+    font-family: monospace;
+    text-align: center;
+}
+
+.color-item label {
+    margin: 2px 0;
+}
+
+/* Поля формы обратной связи */
+#feedbackFields {
+    transition: opacity 0.3s ease;
+    background-color: #f0f8ff;
+    border-radius: 6px;
+    margin-top: 8px;
+}
+
+#feedbackFields label {
+    display: inline-block;
+    margin-right: 15px;
+}
+
+.note {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 8px;
+}
+
+.required {
+    color: red;
+}
+
+/* Кнопки */
+button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 14px 25px;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+.result {
+    margin-top: 30px;
+    border-top: 2px solid #eee;
+    padding-top: 20px;
+}
+
+textarea#promptOutput {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 14px;
+    background: #f9f9f9;
+}
+
+#copyBtn {
+    background-color: #2ecc71;
+    margin-top: 15px;
+}
+
+#copyBtn:hover {
+    background-color: #27ae60;
+}
+
+#resetBtn {
+    background-color: #e74c3c;
+}
+
+#resetBtn:hover {
+    background-color: #c0392b;
+}
+
+#generateFontPair {
+    background-color: #9b59b6;
+}
+
+#generateFontPair:hover {
+    background-color: #8e44ad;
+}
+.font-preview-container {
+    transition: all 0.3s ease;
+}
+.fixed-item {
+    background-color: #e0e0e0 !important;
+    cursor: default !important;
+    opacity: 0.8;
+}
+
+.sortable-list li.fixed-item:hover {
+    background-color: #e0e0e0 !important;
+}
+/* Стили для кнопок удаления в списке блоков */
+.sortable-list li span {
+    font-size: 20px;
+    line-height: 1;
+    user-select: none;
+}
+
+.sortable-list li span:hover {
+    color: darkred;
+}
+
+.preview-header, .preview-body {
+    transition: font-family 0.2s ease;
+}

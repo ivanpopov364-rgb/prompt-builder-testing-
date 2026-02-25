@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Промпт Архитектор</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Sortable CDN для перетаскивания -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>🧩 Промпт Архитектор </h1>
+
+        <!-- Вкладки -->
+        <div class="tabs">
+            <button class="tab-button active" data-tab="tab1">Контекст и цели</button>
+            <button class="tab-button" data-tab="tab2">Дизайн и цвета</button>
+            <button class="tab-button" data-tab="tab3">Структура</button>
+            <button class="tab-button" data-tab="tab4">Анимации</button>
+            <button class="tab-button" data-tab="tab5">Дополнительно</button>
+        </div>
+
+        <form id="promptForm">
+            <!-- Вкладка 1: Контекст и цели -->
+            <div id="tab1" class="tab-content active">
+                <fieldset>
+                    <legend>Контекст и цели</legend>
+
+                    <!-- Тип сайта (радио) -->
+                    <div class="form-group">
+                        <label>Тип сайта:</label>
+                        <label><input type="radio" name="siteType" value="Лендинг" checked> Лендинг (одностраничный)</label>
+                        <label><input type="radio" name="siteType" value="Многостраничный"> Многостраничный сайт</label>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="projectName">Название проекта/бизнеса <span class="required">*</span>:</label>
+                        <input type="text" id="projectName" name="projectName" placeholder="Например: Студия MegaGroup" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="targetAudience">Целевая аудитория:</label>
+                        <input type="text" id="targetAudience" name="targetAudience" placeholder="Например: малый бизнес, фрилансеры">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Главная цель сайта (можно выбрать несколько):</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="siteGoals" value="привлечение клиентов"> Привлечение клиентов</label>
+                            <label><input type="checkbox" name="siteGoals" value="информационный сайт"> Информационный сайт</label>
+                            <label><input type="checkbox" name="siteGoals" value="показ портфолио"> Показ портфолио</label>
+                            <label><input type="checkbox" name="siteGoals" value="визитка"> Визитка</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tone">Тон коммуникации:</label>
+                        <select id="tone" name="tone">
+                            <option value="">-- Выберите --</option>
+                            <option value="дружелюбный">Дружелюбный</option>
+                            <option value="экспертный">Экспертный</option>
+                            <option value="дерзкий">Дерзкий</option>
+                            <option value="спокойный">Спокойный</option>
+                            <option value="other">Другой (укажите ниже)</option>
+                        </select>
+                        <input type="text" id="toneOther" name="toneOther" placeholder="Свой вариант тона" style="margin-top: 10px; display: none;">
+                    </div>
+                </fieldset>
+            </div>
+
+            <!-- Вкладка 2: Дизайн и цвета -->
+            <div id="tab2" class="tab-content">
+                <!-- Стилистика (текстовое описание + выпадающий список) -->
+                <div class="form-group">
+                    <label for="style">Стилистика (опишите или выберите готовый вариант):</label>
+                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                        <input type="text" id="style" name="style" placeholder="Опишите желаемый стиль" style="flex: 2;" required>
+                        <select id="stylePreset" style="flex: 1; padding: 12px; border-radius: 6px; border: 1px solid #ccc;">
+                            <option value="">-- Выберите готовый вариант --</option>
+                            <option value="Minimalist Modern (Awwwards Style)">Minimalist Modern (Awwwards Style)</option>
+                            <option value="Bento Grid (Apple/SaaS Style)">Bento Grid (Apple/SaaS Style)</option>
+                            <option value="Neo-Brutalism (Gumroad Style)">Neo-Brutalism (Gumroad Style)</option>
+                            <option value="Glassmorphism (Futuristic/Tech)">Glassmorphism (Futuristic/Tech)</option>
+                            <option value="Swiss / International Style">Swiss / International Style</option>
+                            <option value="Claymorphism / Soft UI">Claymorphism / Soft UI</option>
+                            <option value="Минимализм, светлые тона, много воздуха, простые формы">Минимализм</option>
+                            <option value="Корпоративный, строгий, синие и серые оттенки, деловой стиль">Корпоративный</option>
+                            <option value="Яркий и современный, насыщенные цвета, динамичные элементы, градиенты">Яркий и современный</option>
+                            <option value="Природный/эко, зелёные тона, натуральные текстуры, скругления">Природный/эко</option>
+                            <option value="Технологичный, тёмная тема, неон, футуристические элементы">Технологичный</option>
+                            <option value="custom">-- Свой вариант --</option>
+                        </select>
+                    </div>
+                    <p class="note">Выберите готовый стиль или напишите свой.</p>
+                </div>
+
+                <!-- Референсы -->
+                <div class="form-group">
+                    <label for="references">Референсы (ссылки на сайты/студии для вдохновения):</label>
+                    <input type="url" id="references" name="references" placeholder="https://... (если несколько, разделите запятой)">
+                </div>
+
+                <!-- ДИЗАЙН СИСТЕМА (три цвета) -->
+                <fieldset>
+                    <legend>🎨 Дизайн система</legend>
+                    <div class="color-row">
+                        <!-- Основной цвет -->
+                        <div class="color-item">
+                            <label for="colorPrimary">Основной цвет:</label>
+                            <div style="display: flex; gap: 5px; align-items: center;">
+                                <input type="color" id="colorPrimary" name="colorPrimary" value="#3498db">
+                                <input type="text" id="colorPrimaryHex" placeholder="#3498db" value="#3498db" maxlength="7">
+                            </div>
+                            <label style="font-size: 0.9em; margin-top: 4px;">
+                                <input type="checkbox" id="colorPrimaryIgnore" name="colorPrimaryIgnore"> Не учитывать
+                            </label>
+                        </div>
+                        <!-- Второстепенный цвет -->
+                        <div class="color-item">
+                            <label for="colorSecondary">Второстепенный цвет:</label>
+                            <div style="display: flex; gap: 5px; align-items: center;">
+                                <input type="color" id="colorSecondary" name="colorSecondary" value="#2ecc71">
+                                <input type="text" id="colorSecondaryHex" placeholder="#2ecc71" value="#2ecc71" maxlength="7">
+                            </div>
+                            <label style="font-size: 0.9em; margin-top: 4px;">
+                                <input type="checkbox" id="colorSecondaryIgnore" name="colorSecondaryIgnore"> Не учитывать
+                            </label>
+                        </div>
+                        <!-- Акцентный цвет -->
+                        <div class="color-item">
+                            <label for="colorAccent">Акцентный цвет:</label>
+                            <div style="display: flex; gap: 5px; align-items: center;">
+                                <input type="color" id="colorAccent" name="colorAccent" value="#e74c3c">
+                                <input type="text" id="colorAccentHex" placeholder="#e74c3c" value="#e74c3c" maxlength="7">
+                            </div>
+                            <label style="font-size: 0.9em; margin-top: 4px;">
+                                <input type="checkbox" id="colorAccentIgnore" name="colorAccentIgnore"> Не учитывать
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Типографика с генератором и предпросмотром -->
+                <fieldset>
+                    <legend>🔤 Типографика</legend>
+                    <div class="form-group">
+                        <label for="headerFont">Шрифт заголовков (из Google Fonts):</label>
+                        <input type="text" id="headerFont" name="headerFont" placeholder="Например: Playfair Display">
+                    </div>
+                    <div class="form-group">
+                        <label for="bodyFont">Шрифт основного текста:</label>
+                        <input type="text" id="bodyFont" name="bodyFont" placeholder="Например: Roboto">
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding-top: 20px">
+                        <button type="button" id="generateFontPair" style="background-color: #9b59b6;">🎲 Сгенерировать пару</button>
+                        <span class="note">также пару можно подобрать на <a href="https://fontjoy.com" target="_blank">FontJoy</a> и вписать названия в поля выше</span>
+                    </div>
+
+                    <!-- Блок предпросмотра шрифтов -->
+                    <div class="font-preview-container" style="margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 8px;">
+                        <h4 style="margin-top: 0;">Предпросмотр:</h4>
+                        <div class="preview-header" style="font-size: 28px; margin-bottom: 15px; font-weight: bold;">
+                            Заголовок: Пример заголовка
+                        </div>
+                        <div class="preview-body" style="font-size: 18px; line-height: 1.5;">
+                            Основной текст: Здесь будет пример текста, набранного основным шрифтом. Посмотрите, как он читается.
+                        </div>
+                        <p class="note">Шрифты подгружаются из Google Fonts, если доступны.</p>
+                    </div>
+                </fieldset>
+            </div>
+
+            <!-- Вкладка 3: Структура -->
+            <div id="tab3" class="tab-content">
+                <fieldset>
+                    <legend>Выберите блоки для главной страницы (Header и Footer фиксированы)</legend>
+                    <div class="checkbox-group" id="blocks-checkbox-group">
+                        <!-- Стандартные блоки (Header и Footer убраны) -->
+                        <label><input type="checkbox" name="blocks" value="Hero (первый экран)"> Hero (первый экран)</label>
+                        <label><input type="checkbox" name="blocks" value="Преимущества / услуги"> Преимущества / услуги</label>
+                        <label><input type="checkbox" name="blocks" value="Портфолио / работы"> Портфолио / работы</label>
+                        <label><input type="checkbox" name="blocks" value="О компании / команда"> О компании / команда</label>
+                        <label><input type="checkbox" name="blocks" value="Отзывы / клиенты"> Отзывы / клиенты</label>
+                        <label><input type="checkbox" name="blocks" value="Стоимость / тарифы"> Стоимость / тарифы</label>
+                        <label><input type="checkbox" name="blocks" value="FAQ / вопросы"> FAQ / вопросы</label>
+                        <label><input type="checkbox" name="blocks" value="Контакты и форма"> Контакты и форма</label>
+                        <!-- Новые секции -->
+                        <label><input type="checkbox" name="blocks" value="Квиз форма"> Квиз форма</label>
+                        <label><input type="checkbox" name="blocks" value="Карта"> Карта</label>
+                        <label><input type="checkbox" name="blocks" value="Блок До/после"> Блок До/после</label>
+                    </div>
+
+                    <!-- Добавление своего блока -->
+                    <hr>
+                    <div class="form-group">
+                        <label>Добавить свой блок:</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" id="customBlockName" placeholder="Название блока (например, 'Спецпредложение')">
+                            <button type="button" id="addCustomBlock" style="padding: 12px 20px;">➕ Добавить</button>
+                        </div>
+                    </div>
+
+                    <p class="note">Блоки Header и Footer будут автоматически добавлены в начало и конец структуры.</p>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Порядок блоков (перетащите для изменения)</legend>
+                    <ul id="blocks-sortable" class="sortable-list">
+                        <!-- Сюда будут добавляться блоки через JS -->
+                    </ul>
+                    <p class="note">Выберите блоки выше, затем перетаскивайте их в нужном порядке. Header и Footer зафиксированы. У блоков есть кнопка удаления.</p>
+                </fieldset>
+            </div>
+
+            <!-- Вкладка 4: Анимации -->
+            <div id="tab4" class="tab-content">
+                <fieldset>
+                    <legend>Ховер-эффекты</legend>
+
+                    <!-- Кнопки -->
+                    <div class="form-group">
+                        <label>Для кнопок (выберите эффекты):</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="hoverButtons" value="изменение цвета"> изменение цвета</label>
+                            <label><input type="checkbox" name="hoverButtons" value="появление обводки"> появление обводки</label>
+                            <label><input type="checkbox" name="hoverButtons" value="масштабирование"> масштабирование</label>
+                        </div>
+                    </div>
+
+                    <!-- Карточки -->
+                    <div class="form-group">
+                        <label>Для карточек (выберите эффекты):</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="hoverCards" value="поднятие"> поднятие</label>
+                            <label><input type="checkbox" name="hoverCards" value="тень"> тень</label>
+                            <label><input type="checkbox" name="hoverCards" value="граница"> граница</label>
+                        </div>
+                    </div>
+
+                    <!-- Изображения -->
+                    <div class="form-group">
+                        <label>Для изображений (выберите эффекты):</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="hoverImages" value="увеличение"> увеличение</label>
+                            <label><input type="checkbox" name="hoverImages" value="затемнение"> затемнение</label>
+                            <label><input type="checkbox" name="hoverImages" value="цвет->ч/б"> цвет->ч/б</label>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Тип верстки (радио) -->
+                <fieldset>
+                    <legend>⚙️ Тип верстки</legend>
+                    <label><input type="radio" name="scrollType" value="normal" checked> Обычный</label>
+                    <label><input type="radio" name="scrollType" value="snap"> Snap scrolling (прокрутка по секциям)</label>
+                    <label><input type="radio" name="scrollType" value="slider"> Слайдерный скролл (секции наезжают сверху)</label>
+                </fieldset>
+            </div>
+
+            <!-- Вкладка 5: Дополнительно -->
+            <div id="tab5" class="tab-content">
+                <!-- МАТЕРИАЛЫ ЗАКАЗЧИКА -->
+                <fieldset>
+                    <legend>📄 Материалы заказчика</legend>
+                    <div class="form-group">
+                        <label for="services">Список услуг/товаров (каждый с новой строки):</label>
+                        <textarea id="services" name="services" rows="4" placeholder="Например:&#10;Разработка сайтов&#10;Продвижение в соцсетях&#10;Дизайн логотипов"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="companyDesc">Описание компании (чем занимается, особенности):</label>
+                        <textarea id="companyDesc" name="companyDesc" rows="3" placeholder="Напишите пару предложений о компании..."></textarea>
+                    </div>
+                </fieldset>
+
+                <!-- ЛОГОТИП -->
+                <fieldset>
+                    <legend>🖼️ Логотип</legend>
+                    <label>
+                        <input type="checkbox" id="hasLogo" name="hasLogo"> Есть логотип (нужно проанализировать и использовать его дизайн-систему)
+                    </label>
+                </fieldset>
+
+                <!-- Дополнительные пожелания -->
+                <fieldset>
+                    <legend>📝 Дополнительные пожелания</legend>
+                    <textarea id="extraWishes" name="extraWishes" rows="4" placeholder="Впишите тюнинг, который нужно применить на сайте (особые фишки, изюминки и т.д.)"></textarea>
+                </fieldset>
+            </div>
+
+            <!-- Кнопки управления -->
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px;">
+                <button type="button" id="generateBtn">Собрать промпт</button>
+                <!-- Кнопка сброса будет добавлена динамически через JS -->
+            </div>
+        </form>
+
+        <!-- Результат -->
+        <div class="result" id="result" style="display: none;">
+            <h2>Готовый промпт:</h2>
+            <textarea id="promptOutput" rows="15" readonly></textarea>
+            <button id="copyBtn">Копировать в буфер</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
