@@ -1,38 +1,44 @@
 name: Filter Cyrillic Fonts
 
+# Запуск при push в любую ветку, а также возможность ручного запуска
 on:
   push:
-    branches: [ "main" ]
-  workflow_dispatch:
+    branches: [ main, master ]
+  workflow_dispatch:  # позволяет запускать вручную из интерфейса GitHub
 
 jobs:
   filter:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
       - name: Install dependencies
         run: pip install pandas requests
 
-      - name: Download original data
+      - name: Download original data from fontjoy
         run: |
           mkdir -p font-filter
           wget -O font-filter/metadata.tsv https://raw.githubusercontent.com/Jack000/fontjoy/master/metadata.tsv
           wget -O font-filter/vectors-200.tsv https://raw.githubusercontent.com/Jack000/fontjoy/master/vectors-200.tsv
 
       - name: Run filter script
+        env:
+          # Если у вас есть API-ключ Google Fonts, сохраните его в секретах
+          # и раскомментируйте следующую строку. Иначе скрипт использует встроенный список.
+          GOOGLE_FONTS_API_KEY: ${{ secrets.GOOGLE_FONTS_API_KEY }}
         run: python font-filter/filter_cyrillic.py
 
-      - name: Commit and push
+      - name: Commit and push changes
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add font-filter/*.tsv font-filter/*.json
-          git diff --quiet && git diff --staged --quiet || git commit -m "Auto-update filtered fonts"
+          git diff --quiet && git diff --staged --quiet || git commit -m "Update filtered font files"
           git push
