@@ -142,20 +142,28 @@
                 </fieldset>
 
                 <!-- Типографика с генератором и предпросмотром -->
-                <fieldset>
-                    <legend>🔤 Типографика</legend>
-                    <div class="form-group">
-                        <label for="headerFont">Шрифт заголовков (из Google Fonts):</label>
-                        <input type="text" id="headerFont" name="headerFont" placeholder="Например: Playfair Display">
-                    </div>
-                    <div class="form-group">
-                        <label for="bodyFont">Шрифт основного текста:</label>
-                        <input type="text" id="bodyFont" name="bodyFont" placeholder="Например: Roboto">
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding-top: 20px">
-                        <button type="button" id="generateFontPair" style="background-color: #9b59b6;">🎲 Сгенерировать пару</button>
-                        <span class="note">также пару можно подобрать на <a href="https://fontjoy.com" target="_blank">FontJoy</a> и вписать названия в поля выше</span>
-                    </div>
+               <div id="design-tab" class="tab-content">
+  <h2>Дизайн и цвета</h2>
+  <p>Подберите гармоничные пары шрифтов</p>
+  
+  <!-- Область для отображения шрифтов -->
+  <div id="font-pairing-area">
+    <div class="font-selector">
+      <label for="base-font">Основной шрифт:</label>
+      <select id="base-font" onchange="updatePairing()"></select>
+    </div>
+    
+    <div class="font-selector">
+      <label for="contrast-font">Контрастный шрифт:</label>
+      <select id="contrast-font" onchange="updatePairing()"></select>
+    </div>
+    
+    <div id="font-preview">
+      <h3>Пример текста</h3>
+      <p id="preview-text">Съешь ещё этих мягких французских булок, да выпей чаю.</p>
+    </div>
+  </div>
+</div>
 
                     <!-- Блок предпросмотра шрифтов -->
                     <div class="font-preview-container" style="margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 8px;">
