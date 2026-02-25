@@ -7,11 +7,12 @@
     <link rel="stylesheet" href="style.css">
     <!-- Sortable CDN для перетаскивания -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <!-- Предзагрузка пары популярных шрифтов для примера (можно добавить динамически) -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Open+Sans&family=Montserrat&subset=cyrillic&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <h1>🧩 Промпт Архитектор </h1>
+        <h1>🧩 Промпт Архитектор</h1>
 
         <!-- Вкладки -->
         <div class="tabs">
@@ -23,11 +24,11 @@
         </div>
 
         <form id="promptForm">
-            <!-- Вкладка 1: Контекст и цели -->
+            <!-- Вкладка 1: Контекст и цели (без изменений) -->
             <div id="tab1" class="tab-content active">
+                <!-- ... содержимое без изменений ... -->
                 <fieldset>
                     <legend>Контекст и цели</legend>
-
                     <!-- Тип сайта (радио) -->
                     <div class="form-group">
                         <label>Тип сайта:</label>
@@ -70,41 +71,43 @@
                 </fieldset>
             </div>
 
-            <!-- Вкладка 2: Дизайн и цвета -->
+            <!-- Вкладка 2: Дизайн и цвета (исправленная) -->
             <div id="tab2" class="tab-content">
-                <!-- Стилистика (текстовое описание + выпадающий список) -->
-                <div class="form-group">
-                    <label for="style">Стилистика (опишите или выберите готовый вариант):</label>
-                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                        <input type="text" id="style" name="style" placeholder="Опишите желаемый стиль" style="flex: 2;" required>
-                        <select id="stylePreset" style="flex: 1; padding: 12px; border-radius: 6px; border: 1px solid #ccc;">
-                            <option value="">-- Выберите готовый вариант --</option>
-                            <option value="Minimalist Modern (Awwwards Style)">Minimalist Modern (Awwwards Style)</option>
-                            <option value="Bento Grid (Apple/SaaS Style)">Bento Grid (Apple/SaaS Style)</option>
-                            <option value="Neo-Brutalism (Gumroad Style)">Neo-Brutalism (Gumroad Style)</option>
-                            <option value="Glassmorphism (Futuristic/Tech)">Glassmorphism (Futuristic/Tech)</option>
-                            <option value="Swiss / International Style">Swiss / International Style</option>
-                            <option value="Claymorphism / Soft UI">Claymorphism / Soft UI</option>
-                            <option value="Минимализм, светлые тона, много воздуха, простые формы">Минимализм</option>
-                            <option value="Корпоративный, строгий, синие и серые оттенки, деловой стиль">Корпоративный</option>
-                            <option value="Яркий и современный, насыщенные цвета, динамичные элементы, градиенты">Яркий и современный</option>
-                            <option value="Природный/эко, зелёные тона, натуральные текстуры, скругления">Природный/эко</option>
-                            <option value="Технологичный, тёмная тема, неон, футуристические элементы">Технологичный</option>
-                            <option value="custom">-- Свой вариант --</option>
-                        </select>
+                <!-- Стилистика -->
+                <fieldset>
+                    <legend>Стилистика и референсы</legend>
+                    <div class="form-group">
+                        <label for="style">Стилистика (опишите или выберите готовый вариант):</label>
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <input type="text" id="style" name="style" placeholder="Опишите желаемый стиль" style="flex: 2;" required>
+                            <select id="stylePreset" style="flex: 1; padding: 12px; border-radius: 6px; border: 1px solid #ccc;">
+                                <option value="">-- Выберите готовый вариант --</option>
+                                <option value="Minimalist Modern (Awwwards Style)">Minimalist Modern (Awwwards Style)</option>
+                                <option value="Bento Grid (Apple/SaaS Style)">Bento Grid (Apple/SaaS Style)</option>
+                                <option value="Neo-Brutalism (Gumroad Style)">Neo-Brutalism (Gumroad Style)</option>
+                                <option value="Glassmorphism (Futuristic/Tech)">Glassmorphism (Futuristic/Tech)</option>
+                                <option value="Swiss / International Style">Swiss / International Style</option>
+                                <option value="Claymorphism / Soft UI">Claymorphism / Soft UI</option>
+                                <option value="Минимализм, светлые тона, много воздуха, простые формы">Минимализм</option>
+                                <option value="Корпоративный, строгий, синие и серые оттенки, деловой стиль">Корпоративный</option>
+                                <option value="Яркий и современный, насыщенные цвета, динамичные элементы, градиенты">Яркий и современный</option>
+                                <option value="Природный/эко, зелёные тона, натуральные текстуры, скругления">Природный/эко</option>
+                                <option value="Технологичный, тёмная тема, неон, футуристические элементы">Технологичный</option>
+                                <option value="custom">-- Свой вариант --</option>
+                            </select>
+                        </div>
+                        <p class="note">Выберите готовый стиль или напишите свой.</p>
                     </div>
-                    <p class="note">Выберите готовый стиль или напишите свой.</p>
-                </div>
 
-                <!-- Референсы -->
-                <div class="form-group">
-                    <label for="references">Референсы (ссылки на сайты/студии для вдохновения):</label>
-                    <input type="url" id="references" name="references" placeholder="https://... (если несколько, разделите запятой)">
-                </div>
+                    <div class="form-group">
+                        <label for="references">Референсы (ссылки на сайты/студии для вдохновения):</label>
+                        <input type="url" id="references" name="references" placeholder="https://... (если несколько, разделите запятой)">
+                    </div>
+                </fieldset>
 
                 <!-- ДИЗАЙН СИСТЕМА (три цвета) -->
                 <fieldset>
-                    <legend>🎨 Дизайн система</legend>
+                    <legend>🎨 Цветовая палитра</legend>
                     <div class="color-row">
                         <!-- Основной цвет -->
                         <div class="color-item">
@@ -142,45 +145,28 @@
                     </div>
                 </fieldset>
 
-                <!-- Типографика с генератором и предпросмотром -->
-               <div id="design-tab" class="tab-content">
-  <h2>Дизайн и цвета</h2>
-  <p>Подберите гармоничные пары шрифтов</p>
-  
-  <!-- Область для отображения шрифтов -->
-  <div id="font-pairing-area">
-    <div class="font-selector">
-      <label for="base-font">Основной шрифт:</label>
-      <select id="base-font" onchange="updatePairing()"></select>
-    </div>
-    
-    <div class="font-selector">
-      <label for="contrast-font">Контрастный шрифт:</label>
-      <select id="contrast-font" onchange="updatePairing()"></select>
-    </div>
-    
-    <div id="font-preview">
-      <h3>Пример текста</h3>
-      <p id="preview-text">Съешь ещё этих мягких французских булок, да выпей чаю.</p>
-    </div>
-  </div>
-</div>
-
-                    <!-- Блок предпросмотра шрифтов -->
-                    <div class="font-preview-container" style="margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 8px;">
-                        <h4 style="margin-top: 0;">Предпросмотр:</h4>
-                        <div class="preview-header" style="font-size: 28px; margin-bottom: 15px; font-weight: bold;">
-                            Заголовок: Пример заголовка
+                <!-- ТИПОГРАФИКА (новая система на основе fonts_cyrillic.json) -->
+                <fieldset>
+                    <legend>🔤 Подбор пары шрифтов (из кириллической коллекции)</legend>
+                    <div id="font-pairing-section">
+                        <div class="font-selector">
+                            <label for="base-font">Основной шрифт (заголовки):</label>
+                            <select id="base-font"></select>
                         </div>
-                        <div class="preview-body" style="font-size: 18px; line-height: 1.5;">
-                            Основной текст: Здесь будет пример текста, набранного основным шрифтом. Посмотрите, как он читается.
+                        <div class="font-selector">
+                            <label for="contrast-font">Контрастный шрифт (текст):</label>
+                            <select id="contrast-font"></select>
                         </div>
-                        <p class="note">Шрифты подгружаются из Google Fonts, если доступны.</p>
+                        <div id="font-preview">
+                            <h3>Пример текста</h3>
+                            <p id="preview-text">Съешь ещё этих мягких французских булок, да выпей чаю.</p>
+                        </div>
+                        <p class="note">Шрифты автоматически подгружаются из Google Fonts. Данные основаны на реальных кириллических шрифтах.</p>
                     </div>
                 </fieldset>
             </div>
 
-            <!-- Вкладка 3: Структура -->
+            <!-- Вкладка 3: Структура (без изменений) -->
             <div id="tab3" class="tab-content">
                 <fieldset>
                     <legend>Выберите блоки для главной страницы (Header и Footer фиксированы)</legend>
@@ -222,11 +208,10 @@
                 </fieldset>
             </div>
 
-            <!-- Вкладка 4: Анимации -->
+            <!-- Вкладка 4: Анимации (без изменений) -->
             <div id="tab4" class="tab-content">
                 <fieldset>
                     <legend>Ховер-эффекты</legend>
-
                     <!-- Кнопки -->
                     <div class="form-group">
                         <label>Для кнопок (выберите эффекты):</label>
@@ -267,9 +252,8 @@
                 </fieldset>
             </div>
 
-            <!-- Вкладка 5: Дополнительно -->
+            <!-- Вкладка 5: Дополнительно (без изменений) -->
             <div id="tab5" class="tab-content">
-                <!-- МАТЕРИАЛЫ ЗАКАЗЧИКА -->
                 <fieldset>
                     <legend>📄 Материалы заказчика</legend>
                     <div class="form-group">
@@ -282,7 +266,6 @@
                     </div>
                 </fieldset>
 
-                <!-- ЛОГОТИП -->
                 <fieldset>
                     <legend>🖼️ Логотип</legend>
                     <label>
@@ -290,7 +273,6 @@
                     </label>
                 </fieldset>
 
-                <!-- Дополнительные пожелания -->
                 <fieldset>
                     <legend>📝 Дополнительные пожелания</legend>
                     <textarea id="extraWishes" name="extraWishes" rows="4" placeholder="Впишите тюнинг, который нужно применить на сайте (особые фишки, изюминки и т.д.)"></textarea>
